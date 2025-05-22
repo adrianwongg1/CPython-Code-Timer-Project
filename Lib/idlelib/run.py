@@ -581,6 +581,7 @@ class Executive:
         else:
             self.locals = {}
 
+    # Thinking about putting timer functionality in here
     def runcode(self, code):
         global interruptible
         try:
