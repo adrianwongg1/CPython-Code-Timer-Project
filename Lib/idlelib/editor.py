@@ -70,7 +70,6 @@ class EditorWindow:
 
     allow_code_context = True
     allow_line_numbers = True
-    allow_timer = True
     user_input_insert_tags = None
 
     def __init__(self, flist=None, filename=None, key=None, root=None):
@@ -365,9 +364,6 @@ class EditorWindow:
             text.bind("<<toggle-line-numbers>>", self.toggle_line_numbers_event)
         else:
             self.update_menu_state('options', '*ine*umbers', 'disabled')
-        if self.allow_timer:
-            self.timer = Timer(self)
-            text.bind("<<toggle-timer>>", self.timer.show_timer_event)
 
     def handle_winconfig(self, event=None):
         self.set_width()

@@ -870,7 +870,6 @@ class PyShell(OutputWindow):
     del _idx
 
     allow_line_numbers = False
-    allow_timer = False
     user_input_insert_tags = "stdin"
 
     # New classes
