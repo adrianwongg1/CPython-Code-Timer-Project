@@ -29,6 +29,7 @@ from idlelib import search
 from idlelib.tree import wheel_event
 from idlelib.util import py_extensions
 from idlelib import window
+from idlelib.timer import Timer  # Import the Timer class
 
 # The default tab setting for a Text widget, in average-width characters.
 TK_TABWIDTH_DEFAULT = 8
@@ -69,6 +70,7 @@ class EditorWindow:
 
     allow_code_context = True
     allow_line_numbers = True
+    allow_timer = True
     user_input_insert_tags = None
 
     def __init__(self, flist=None, filename=None, key=None, root=None):
@@ -207,6 +209,7 @@ class EditorWindow:
         text.bind("<<del-word-left>>", self.del_word_left)
         text.bind("<<del-word-right>>", self.del_word_right)
         text.bind("<<beginning-of-line>>", self.home_callback)
+        text.bind("<<show-timer>>", Timer.show_timer_event)
 
         if flist:
             flist.inversedict[self] = key
@@ -334,6 +337,7 @@ class EditorWindow:
         text.bind("<<format-paragraph>>",
                   self.FormatParagraph(self).format_paragraph_event)
         parenmatch = self.ParenMatch(self)
+        text.bind("<<show-timer>>", Timer.show_timer_event)
         text.bind("<<flash-paren>>", parenmatch.flash_paren_event)
         text.bind("<<paren-closed>>", parenmatch.paren_closed_event)
         scriptbinding = ScriptBinding(self)
@@ -361,6 +365,9 @@ class EditorWindow:
             text.bind("<<toggle-line-numbers>>", self.toggle_line_numbers_event)
         else:
             self.update_menu_state('options', '*ine*umbers', 'disabled')
+        if self.allow_timer:
+            self.timer = Timer(self)
+            text.bind("<<toggle-timer>>", self.timer.show_timer_event)
 
     def handle_winconfig(self, event=None):
         self.set_width()
@@ -1605,7 +1612,6 @@ class EditorWindow:
 # "line.col" -> line, as an int
 def index2line(index):
     return int(float(index))
-
 
 _line_indent_re = re.compile(r'[ \t]*')
 def get_line_indent(line, tabwidth):
