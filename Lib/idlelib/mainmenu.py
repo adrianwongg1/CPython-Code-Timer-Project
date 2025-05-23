@@ -78,6 +78,7 @@ menudefs = [
    ('Run... _Customized', '<<run-custom>>'),
    ('C_heck Module', '<<check-module>>'),
    ('Python Shell', '<<open-python-shell>>'),
+   ('Timer', '<<show-timer>>'),
    ]),
 
  ('shell', [
