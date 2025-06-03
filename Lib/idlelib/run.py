@@ -598,6 +598,7 @@ class Executive:
                         timer_proxy = self.rpchandler.get_remote_proxy("timer_obj")
                         timer_proxy.update_header(elapsed_time)
                 except Exception as e:
+                    # Ignore failed attempts to get the timer object
                     pass
         except SystemExit as e:
             if e.args:  # SystemExit called with an argument.

@@ -1,6 +1,6 @@
 import time
-from tkinter import Toplevel, Frame, Label, Button, PhotoImage
-from tkinter import SUNKEN, TOP, BOTTOM, LEFT, X, BOTH, W, EW, NSEW, E
+from tkinter import Toplevel, Frame, Label, Button
+from tkinter import SUNKEN, TOP, BOTTOM, LEFT, X, BOTH, E
 
 class Timer(Toplevel):
     '''
