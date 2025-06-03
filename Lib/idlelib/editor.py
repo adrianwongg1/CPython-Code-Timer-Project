@@ -209,6 +209,8 @@ class EditorWindow:
         text.bind("<<del-word-right>>", self.del_word_right)
         text.bind("<<beginning-of-line>>", self.home_callback)
         text.bind("<<show-timer>>", self.timer_callback)
+        self.timer_run_requested = False
+        self.timer_obj = None
 
         if flist:
             flist.inversedict[self] = key
@@ -363,6 +365,7 @@ class EditorWindow:
             text.bind("<<toggle-line-numbers>>", self.toggle_line_numbers_event)
         else:
             self.update_menu_state('options', '*ine*umbers', 'disabled')
+        self.timer_run_requested = False
 
     def handle_winconfig(self, event=None):
         self.set_width()
@@ -429,7 +432,7 @@ class EditorWindow:
         return "break"
     
     def timer_callback(self, event=None):
-        Timer(self.top, scriptbinding=self.scriptbinding)
+        Timer(self.top, editwin=self)
         return "break"
 
     def set_status_bar(self):

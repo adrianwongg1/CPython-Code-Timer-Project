@@ -128,6 +128,9 @@ class ScriptBinding:
             return 'break'
         code = self.checksyntax(filename)
         if not code:
+            # Syntax check fail, reset timer visual 
+            if self.editwin.timer_obj:
+                self.editwin.timer_obj.update_header(0.0)
             return 'break'
         if not self.tabnanny(filename):
             return 'break'
@@ -160,6 +163,11 @@ class ScriptBinding:
             del _sys, argv, _basename, _os
             \n""")
         interp.prepend_syspath(filename)
+        if self.editwin.timer_run_requested == True:
+            self.editwin.timer_obj.update_header('RUNNING!')
+            # pass timer object into runcode function (run.py)
+            interp.rpcclt.register("timer_obj", self.editwin.timer_obj)
+            self.editwin.timer_run_requested = False 
         # XXX KBK 03Jul04 When run w/o subprocess, runtime warnings still
         #         go to __stderr__.  With subprocess, they go to the shell.
         #         Need to change streams in pyshell.ModifiedInterpreter.

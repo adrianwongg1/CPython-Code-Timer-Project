@@ -1,3 +1,4 @@
+import time
 from tkinter import Toplevel, Frame, Label, Button, PhotoImage
 from tkinter import SUNKEN, TOP, BOTTOM, LEFT, X, BOTH, W, EW, NSEW, E
 
@@ -7,7 +8,7 @@ class Timer(Toplevel):
     in milliseconds to be displayed in the shell for the user to see.
     
     '''
-    def __init__(self, parent, scriptbinding, title='Timer', *, _htest=False, _utest=False):
+    def __init__(self, parent, editwin, title='Timer', *, _htest=False, _utest=False):
         """Create popup, do not return until tk widget destroyed.
 
         parent - parent of this dialog
@@ -35,8 +36,8 @@ class Timer(Toplevel):
         self.bind('<Escape>', self.close)  # dismiss dialog
         self._current_textview = None
         self._utest = _utest
-        self.scriptbinding = scriptbinding
-
+        self.editwin = editwin
+        self.editwin.timer_obj = self
         if not _utest:
             self.deiconify()
             self.wait_window()
@@ -62,9 +63,17 @@ class Timer(Toplevel):
 
     def run(self, event=None):
         print("Running timer")
-        self.scriptbinding.run_module_event(event)
-        self.header.config(text='-- NEW TIME --')
+        self.editwin.timer_run_requested = True
+        self.editwin.scriptbinding.run_module_event(event)
 
+    def update_header(self, elapsed_time):
+        if type(elapsed_time) == str:
+            self.header.config(text=elapsed_time)
+            return
+        seconds = int(elapsed_time)
+        millis = int((elapsed_time - seconds) * 1000)
+        formatted = time.strftime('%H:%M:%S', time.gmtime(seconds)) + f".{millis:03d}"
+        self.header.config(text=formatted)
 
     def close(self, event=None):
         "Dismiss timer window."
