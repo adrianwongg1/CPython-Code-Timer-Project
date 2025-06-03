@@ -130,7 +130,7 @@ class ScriptBinding:
         if not code:
             # Syntax check fail, reset timer visual 
             if self.editwin.timer_obj:
-                self.editwin.timer_obj.update_header(0.0)
+                self.editwin.timer_obj.update_header('FAILED!')
             return 'break'
         if not self.tabnanny(filename):
             return 'break'
@@ -164,7 +164,7 @@ class ScriptBinding:
             \n""")
         interp.prepend_syspath(filename)
         if self.editwin.timer_run_requested == True:
-            self.editwin.timer_obj.update_header('RUNNING!')
+            self.editwin.timer_obj.update_header('RUNNING...')
             # pass timer object into runcode function (run.py)
             interp.rpcclt.register("timer_obj", self.editwin.timer_obj)
             self.editwin.timer_run_requested = False 
