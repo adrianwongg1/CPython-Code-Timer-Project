@@ -67,6 +67,7 @@ import idlelib.pyshell  # Set Windows DPI awareness before Tk().
 from importlib import import_module
 import textwrap
 import tkinter as tk
+from idlelib.timer import Timer
 from tkinter.ttk import Scrollbar
 tk.NoDefaultRoot()
 
@@ -78,6 +79,29 @@ AboutDialog_spec = {
     'msg': "Click on URL to open in default browser.\n"
            "Verify x.y.z versions and test each button, including Close.\n "
     }
+
+class DummyScriptBinding:
+    def run_module_event(self, event=None):
+        import time
+        print("Simulating 5 seconds...")
+        start = time.perf_counter()
+        time.sleep(5)
+        elapsed = time.perf_counter() - start
+        self.editwin.timer_obj.update_header(elapsed)
+
+class DummyEditWin:
+    def __init__(self):
+        self.timer_run_requested = False
+        self.scriptbinding = DummyScriptBinding()
+        self.scriptbinding.editwin = self
+
+Timer_spec = {
+    'file': 'timer',
+    'kwds': {'_htest': True,
+             'editwin': DummyEditWin(),},
+    'msg': "This tests the Timer popup. Click 'Run' to simulate a 5-second task.\n"
+           "The label will update with the elapsed time afterward.",
+}
 
 # TODO implement ^\; adding '<Control-Key-\\>' to function does not work.
 _calltip_window_spec = {
