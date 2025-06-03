@@ -581,7 +581,6 @@ class Executive:
         else:
             self.locals = {}
 
-    # Thinking about putting timer functionality in here
     def runcode(self, code):
         global interruptible
         try:
@@ -594,8 +593,9 @@ class Executive:
                 interruptible = False
                 elapsed_time = time.perf_counter() - start_time
                 try:
-                    if self.rpchandler.get_remote_proxy("time_code_ex"):
-                        timer_proxy = self.rpchandler.get_remote_proxy("time_code_ex")
+                    # Get timer object passed in from runscript.py, update UI with elapsed_time
+                    if self.rpchandler.get_remote_proxy("timer_obj"):
+                        timer_proxy = self.rpchandler.get_remote_proxy("timer_obj")
                         timer_proxy.update_header(elapsed_time)
                 except Exception as e:
                     pass
