@@ -167,9 +167,15 @@ class ScriptBinding:
         # XXX KBK 03Jul04 When run w/o subprocess, runtime warnings still
         #         go to __stderr__.  With subprocess, they go to the shell.
         #         Need to change streams in pyshell.ModifiedInterpreter.
+<<<<<<< HEAD
         if self.editwin.timer_run_requested == True:
             self.editwin.timer_obj.update_header('RUNNING!')
             interp.rpcclt.register("time_code_ex", self.editwin.timer_obj)
+=======
+        if getattr(self.editwin, 'timer_run_requested', False):
+            interp.rpcclt.register("time_code_ex", Timer(self.editwin.top))
+            print('Timer registered for RPC')
+>>>>>>> origin/return_time_value
             self.editwin.timer_run_requested = False 
         interp.runcode(code)
         return 'break'
