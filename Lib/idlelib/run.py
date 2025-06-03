@@ -571,6 +571,7 @@ class MyHandler(rpc.RPCHandler):
 
 
 class Executive:
+    time_exectution = True
 
     def __init__(self, rpchandler):
         self.rpchandler = rpchandler
@@ -581,16 +582,25 @@ class Executive:
         else:
             self.locals = {}
 
+    def set_time_execution(self,value):
+        Executive.time_exectution = value
+
     # Thinking about putting timer functionality in here
     def runcode(self, code):
         global interruptible
         try:
             self.user_exc_info = None
             interruptible = True
-            try:
-                exec(code, self.locals)
-            finally:
-                interruptible = False
+            if Executive.time_exectution:
+                start_time = time.perf_counter()
+                try:
+                    exec(code, self.locals)
+                finally:
+                    interruptible = False
+                    elapsed_time = time.perf_counter() - start_time
+                    print(f"\n Execution time: {elapsed_time:.4f} seconds", file=sys.stdout)
+                    # Ensure execution time is only printed once
+                    #Executive.time_exectution = False 
         except SystemExit as e:
             if e.args:  # SystemExit called with an argument.
                 ob = e.args[0]
