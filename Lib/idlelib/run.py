@@ -571,7 +571,7 @@ class MyHandler(rpc.RPCHandler):
 
 
 class Executive:
-    time_exectution = False
+    time_exectution = True
 
     def __init__(self, rpchandler):
         self.rpchandler = rpchandler
@@ -600,7 +600,7 @@ class Executive:
                     elapsed_time = time.perf_counter() - start_time
                     print(f"\n Execution time: {elapsed_time:.4f} seconds", file=sys.stdout)
                     # Ensure execution time is only printed once
-                    Executive.time_exectution = False 
+                    #Executive.time_exectution = False 
         except SystemExit as e:
             if e.args:  # SystemExit called with an argument.
                 ob = e.args[0]
