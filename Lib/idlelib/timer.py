@@ -1,3 +1,4 @@
+import time
 from tkinter import Toplevel, Frame, Label, Button, PhotoImage
 from tkinter import SUNKEN, TOP, BOTTOM, LEFT, X, BOTH, W, EW, NSEW, E
 
@@ -58,12 +59,24 @@ class Timer(Toplevel):
         frame_background = Frame(frame, bg=self.bg)
         frame_background.pack(expand=True, fill=BOTH)
 
-        header = Label(frame_background, text='00:00:00', fg=self.fg,
+        self.header = Label(frame_background, text='00:00:00', fg=self.fg,
                        bg=self.bg, font=('courier', 24, 'bold'))
-        header.grid(row=0, column=0, sticky=E, padx=10, pady=10)
+        self.header.grid(row=0, column=0, sticky=E, padx=10, pady=10)
+
+    def update_header(self, elapsed_time):
+        # Format as HH:MM:SS.mmm
+        seconds = int(elapsed_time)
+        millis = int((elapsed_time - seconds) * 1000)
+        formatted = time.strftime('%H:%M:%S', time.gmtime(seconds)) + f".{millis:03d}"
+        print(f'formatted time to change in timer {formatted}')
+        self.header.config(text=formatted)
 
     def run(self, event=None):
         print("Running timer")
+        self.parent.timer_run_requested = True
+        # Trigger the run-module event
+        self.parent.text.event_generate("<<run-module>>")
+        print('running module')
 
     def rerun(self, event=None):
         print("Rerunning timer")
