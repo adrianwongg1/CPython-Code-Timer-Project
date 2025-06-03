@@ -208,7 +208,7 @@ class EditorWindow:
         text.bind("<<del-word-left>>", self.del_word_left)
         text.bind("<<del-word-right>>", self.del_word_right)
         text.bind("<<beginning-of-line>>", self.home_callback)
-        text.bind("<<show-timer>>", Timer.show_timer_event)
+        text.bind("<<show-timer>>", self.timer_callback)
 
         if flist:
             flist.inversedict[self] = key
@@ -336,7 +336,6 @@ class EditorWindow:
         text.bind("<<format-paragraph>>",
                   self.FormatParagraph(self).format_paragraph_event)
         parenmatch = self.ParenMatch(self)
-        text.bind("<<show-timer>>", Timer.show_timer_event)
         text.bind("<<flash-paren>>", parenmatch.flash_paren_event)
         text.bind("<<paren-closed>>", parenmatch.paren_closed_event)
         scriptbinding = ScriptBinding(self)
@@ -427,6 +426,10 @@ class EditorWindow:
             self.text.tag_add("sel", first, last)
         self.text.mark_set("insert", dest)
         self.text.see("insert")
+        return "break"
+    
+    def timer_callback(self, event=None):
+        Timer(self.top)
         return "break"
 
     def set_status_bar(self):
