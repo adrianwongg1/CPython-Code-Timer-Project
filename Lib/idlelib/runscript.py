@@ -21,6 +21,7 @@ from idlelib import macosx
 from idlelib import pyshell
 from idlelib.query import CustomRun
 from idlelib import outwin
+from idlelib.timer import Timer
 
 indent_message = """Error: Inconsistent indentation detected!
 
@@ -163,6 +164,10 @@ class ScriptBinding:
         # XXX KBK 03Jul04 When run w/o subprocess, runtime warnings still
         #         go to __stderr__.  With subprocess, they go to the shell.
         #         Need to change streams in pyshell.ModifiedInterpreter.
+        if getattr(self.editwin, 'timer_run_requested', False):
+            interp.rpcclt.register("time_code_ex", Timer(self.editwin.top))
+            print('Timer registered for RPC')
+            self.editwin.timer_run_requested = False 
         interp.runcode(code)
         return 'break'
 

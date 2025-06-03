@@ -1,3 +1,4 @@
+import time
 from tkinter import Toplevel, Frame, Label, Button, PhotoImage
 from tkinter import SUNKEN, TOP, BOTTOM, LEFT, X, BOTH, W, EW, NSEW, E
 
@@ -65,6 +66,13 @@ class Timer(Toplevel):
         self.scriptbinding.run_module_event(event)
         self.header.config(text='-- NEW TIME --')
 
+    def update_header(self, elapsed_time):
+        # Format as HH:MM:SS.mmm
+        seconds = int(elapsed_time)
+        millis = int((elapsed_time - seconds) * 1000)
+        formatted = time.strftime('%H:%M:%S', time.gmtime(seconds)) + f".{millis:03d}"
+        print(f'formatted time to change in timer {formatted}')
+        self.header.config(text=formatted)
 
     def close(self, event=None):
         "Dismiss timer window."

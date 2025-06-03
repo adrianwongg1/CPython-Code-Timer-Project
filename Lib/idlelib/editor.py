@@ -363,6 +363,7 @@ class EditorWindow:
             text.bind("<<toggle-line-numbers>>", self.toggle_line_numbers_event)
         else:
             self.update_menu_state('options', '*ine*umbers', 'disabled')
+        self.timer_run_requested = False
 
     def handle_winconfig(self, event=None):
         self.set_width()

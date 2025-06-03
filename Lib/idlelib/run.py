@@ -598,9 +598,12 @@ class Executive:
                 finally:
                     interruptible = False
                     elapsed_time = time.perf_counter() - start_time
+                    try:
+                        timer_proxy = self.rpchandler.get_remote_proxy("time_code_ex")
+                        timer_proxy.update_header(elapsed_time)
+                    except Exception as e:
+                        print(f"Timer update failed: {e}", file=sys.stdout)
                     print(f"\n Execution time: {elapsed_time:.4f} seconds", file=sys.stdout)
-                    # Ensure execution time is only printed once
-                    #Executive.time_exectution = False 
         except SystemExit as e:
             if e.args:  # SystemExit called with an argument.
                 ob = e.args[0]
