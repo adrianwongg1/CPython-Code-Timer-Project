@@ -338,10 +338,10 @@ class EditorWindow:
         parenmatch = self.ParenMatch(self)
         text.bind("<<flash-paren>>", parenmatch.flash_paren_event)
         text.bind("<<paren-closed>>", parenmatch.paren_closed_event)
-        scriptbinding = ScriptBinding(self)
-        text.bind("<<check-module>>", scriptbinding.check_module_event)
-        text.bind("<<run-module>>", scriptbinding.run_module_event)
-        text.bind("<<run-custom>>", scriptbinding.run_custom_event)
+        self.scriptbinding = ScriptBinding(self)
+        text.bind("<<check-module>>", self.scriptbinding.check_module_event)
+        text.bind("<<run-module>>", self.scriptbinding.run_module_event)
+        text.bind("<<run-custom>>", self.scriptbinding.run_custom_event)
         text.bind("<<do-rstrip>>", self.Rstrip(self).do_rstrip)
         self.ctip = ctip = self.Calltip(self)
         text.bind("<<try-open-calltip>>", ctip.try_open_calltip_event)
@@ -429,7 +429,7 @@ class EditorWindow:
         return "break"
     
     def timer_callback(self, event=None):
-        Timer(self.top)
+        Timer(self.top, scriptbinding=self.scriptbinding)
         return "break"
 
     def set_status_bar(self):

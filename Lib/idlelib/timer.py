@@ -7,7 +7,7 @@ class Timer(Toplevel):
     in milliseconds to be displayed in the shell for the user to see.
     
     '''
-    def __init__(self, parent, title='Timer', *, _htest=False, _utest=False):
+    def __init__(self, parent, scriptbinding, title='Timer', *, _htest=False, _utest=False):
         """Create popup, do not return until tk widget destroyed.
 
         parent - parent of this dialog
@@ -35,6 +35,7 @@ class Timer(Toplevel):
         self.bind('<Escape>', self.close)  # dismiss dialog
         self._current_textview = None
         self._utest = _utest
+        self.scriptbinding = scriptbinding
 
         if not _utest:
             self.deiconify()
@@ -47,26 +48,23 @@ class Timer(Toplevel):
         frame.pack(side=TOP, expand=True, fill=BOTH)
         self.button_run = Button(frame_buttons, text='Run',
                                  command=self.run)
-        self.button_run.pack(side=LEFT, padx=10, pady=10)
-        self.button_rerun = Button(frame_buttons, text='Rerun',
-                                   command=self.rerun)
-        self.button_rerun.pack(side=LEFT, padx=10, pady=10)
+        self.button_run.pack(side=LEFT, padx=15, pady=10)
         self.button_close = Button(frame_buttons, text='Close',
                                 command=self.close)
-        self.button_close.pack(side=LEFT, padx=10, pady=10)
+        self.button_close.pack(side=LEFT, padx=15, pady=10)
 
-        frame_background = Frame(frame, bg=self.bg)
-        frame_background.pack(expand=True, fill=BOTH)
+        self.frame_background = Frame(frame, bg=self.bg)
+        self.frame_background.pack(expand=True, fill=BOTH)
 
-        header = Label(frame_background, text='00:00:00', fg=self.fg,
+        self.header = Label(self.frame_background, text='00:00:00', fg=self.fg,
                        bg=self.bg, font=('courier', 24, 'bold'))
-        header.grid(row=0, column=0, sticky=E, padx=10, pady=10)
+        self.header.grid(row=0, column=0, sticky=E, padx=10, pady=10)
 
     def run(self, event=None):
         print("Running timer")
+        self.scriptbinding.run_module_event(event)
+        self.header.config(text='-- NEW TIME --')
 
-    def rerun(self, event=None):
-        print("Rerunning timer")
 
     def close(self, event=None):
         "Dismiss timer window."
