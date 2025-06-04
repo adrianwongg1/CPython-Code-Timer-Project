@@ -10,7 +10,6 @@
 '''
 from idlelib import timer
 import unittest
-import unittest.mock
 from idlelib.delegator import Delegator
 from idlelib.percolator import Percolator
 import tkinter as tk
