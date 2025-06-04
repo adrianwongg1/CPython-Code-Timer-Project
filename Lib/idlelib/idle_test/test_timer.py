@@ -1,13 +1,3 @@
-'''
-  TODO: 
-  1. Add test to check whether the window is created if no error
-  2. Check for Error pop-up if file is not saved or no main function is found
-  3. Test for an estimate time for a specific function (Will need to be given a range)
-  4. Figure out how to test the time of code execution
-         a. Either grab the text and try to execute it
-         b. Treat it like Pyshell and try to execute it
-  5. Add human tests
-'''
 from idlelib import timer
 import unittest
 from idlelib.delegator import Delegator
@@ -36,7 +26,7 @@ class DummyScriptBinding:
 class TestTimer(unittest.TestCase):
   def setUp(self):
     self.root = tk.Tk()
-    self.root.withdraw()  # Hide main window during tests
+    self.root.withdraw()  
     self.editwin = Dummy_editwin()
     # Create Timer instance with _utest=True to avoid wait_window()
     self.timer = Timer(self.root, self.editwin, _utest=True)
@@ -52,7 +42,6 @@ class TestTimer(unittest.TestCase):
     self.assertTrue(self.editwin.scriptbinding.run_module_event_called)
 
   def test_update_header_formats_time_correctly(self):
-    # Pass a float seconds value
     self.timer.update_header(12.345)
     text = self.timer.header['text']
     self.assertIn("00:00:12", text)
