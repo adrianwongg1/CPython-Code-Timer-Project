@@ -29,6 +29,7 @@ from idlelib import search
 from idlelib.tree import wheel_event
 from idlelib.util import py_extensions
 from idlelib import window
+from idlelib.timer import Timer
 
 # The default tab setting for a Text widget, in average-width characters.
 TK_TABWIDTH_DEFAULT = 8
@@ -207,6 +208,9 @@ class EditorWindow:
         text.bind("<<del-word-left>>", self.del_word_left)
         text.bind("<<del-word-right>>", self.del_word_right)
         text.bind("<<beginning-of-line>>", self.home_callback)
+        text.bind("<<show-timer>>", self.timer_callback)
+        self.timer_run_requested = False
+        self.timer_obj = None
 
         if flist:
             flist.inversedict[self] = key
@@ -336,10 +340,10 @@ class EditorWindow:
         parenmatch = self.ParenMatch(self)
         text.bind("<<flash-paren>>", parenmatch.flash_paren_event)
         text.bind("<<paren-closed>>", parenmatch.paren_closed_event)
-        scriptbinding = ScriptBinding(self)
-        text.bind("<<check-module>>", scriptbinding.check_module_event)
-        text.bind("<<run-module>>", scriptbinding.run_module_event)
-        text.bind("<<run-custom>>", scriptbinding.run_custom_event)
+        self.scriptbinding = ScriptBinding(self)
+        text.bind("<<check-module>>", self.scriptbinding.check_module_event)
+        text.bind("<<run-module>>", self.scriptbinding.run_module_event)
+        text.bind("<<run-custom>>", self.scriptbinding.run_custom_event)
         text.bind("<<do-rstrip>>", self.Rstrip(self).do_rstrip)
         self.ctip = ctip = self.Calltip(self)
         text.bind("<<try-open-calltip>>", ctip.try_open_calltip_event)
@@ -361,6 +365,7 @@ class EditorWindow:
             text.bind("<<toggle-line-numbers>>", self.toggle_line_numbers_event)
         else:
             self.update_menu_state('options', '*ine*umbers', 'disabled')
+            self.timer_run_requested = False
 
     def handle_winconfig(self, event=None):
         self.set_width()
@@ -424,6 +429,10 @@ class EditorWindow:
             self.text.tag_add("sel", first, last)
         self.text.mark_set("insert", dest)
         self.text.see("insert")
+        return "break"
+
+    def timer_callback(self, event=None):
+        Timer(self.top, editwin=self)
         return "break"
 
     def set_status_bar(self):

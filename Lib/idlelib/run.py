@@ -584,6 +584,7 @@ class Executive:
     # Thinking about putting timer functionality in here
     def runcode(self, code):
         global interruptible
+        start_time = time.perf_counter()
         try:
             self.user_exc_info = None
             interruptible = True
@@ -591,6 +592,13 @@ class Executive:
                 exec(code, self.locals)
             finally:
                 interruptible = False
+                elapsed_time = time.perf_counter() - start_time
+                try:
+                    if self.rpchandler.get_remote_proxy("timer_obj"):
+                        timer_proxy = self.rpchandler.get_remote_proxy("timer_obj")
+                        timer_proxy.update_header(elapsed_time)
+                except Exception as e:
+                    pass
         except SystemExit as e:
             if e.args:  # SystemExit called with an argument.
                 ob = e.args[0]
